@@ -6,9 +6,9 @@ public class CalendrierAnnuel {
 	int[] listeJoursMois = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 	
 	public CalendrierAnnuel() {
-		calendrier = new Mois[12];
+		this.calendrier = new Mois[12];
 		for (int i = 0; i < 12; i++) {
-			calendrier[i] = new Mois(listeNomMois[i], listeJoursMois[i]);
+			this.calendrier[i] = new Mois(listeNomMois[i], listeJoursMois[i]);
 		}
 	}
 	
@@ -18,7 +18,11 @@ public class CalendrierAnnuel {
 	
 	public boolean reserver(int jour, int mois) {
 		if (estLibre(jour, mois)) {
-			calendrier[mois].reserver(jour);
+			try {
+				calendrier[mois-1].reserver(jour-1);
+			} catch (IllegalStateException e) {
+				System.out.println(e);
+			}
 			return true;
 		}
 		return false;
@@ -40,11 +44,12 @@ public class CalendrierAnnuel {
 			return !jours[jour];
 		}
 		
-		private void reserver(int jour) {
+		private void reserver(int jour) throws IllegalStateException {
 			if (estLibre(jour)) {
 				jours[jour] = true;
+			} else {
+				throw new IllegalStateException("Erreur reserver(): jour n'est pas libre.");
 			}
-			throw new IllegalStateException("Erreur reserver(): jour n'est pas libre.");
 		}
 	}
 }
